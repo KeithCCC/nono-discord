@@ -38,6 +38,14 @@ npm run build
 npm run preview
 ```
 
+## Deployment
+
+Current OpenClaw deployment:
+
+- `https://srv1300726.hstgr.cloud/nono-discord/`
+- Protected by the same OpenBrain/MemEdit login session.
+- Static files are deployed to `/srv/nono-discord`.
+
 ## Architecture
 
 - `src/models.ts` defines the adapter-neutral data model.
