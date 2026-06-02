@@ -159,7 +159,7 @@ const messages: Message[] = [
 export function createSeedWorkspace(): Workspace {
   return {
     id: "openclaw-local-workspace",
-    name: "OpenClaw Issue Console",
+    name: "Nono (OpenClaw) Issue Console",
     channels,
     issues,
     messages,

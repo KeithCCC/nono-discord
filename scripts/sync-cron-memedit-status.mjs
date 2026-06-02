@@ -27,7 +27,7 @@ const defaultAgents = [
 
 const createWorkspace = () => ({
   id: "openclaw-local-workspace",
-  name: "OpenClaw Issue Console",
+  name: "Nono (OpenClaw) Issue Console",
   channels: [],
   issues: [],
   messages: [],
