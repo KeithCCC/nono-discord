@@ -11,7 +11,7 @@ This is the current MVP: a standalone React app that models Discord-style channe
 - Channel and issue create/edit/delete flows
 - Status, priority, tags, assigned agent, and channel movement controls
 - Message history per issue
-- Mock agent replies behind `agentService`
+- Authenticated OpenBrain relay from issue messages to OpenClaw/Nono
 - Browser `localStorage` fallback plus authenticated server sync
 - Keyword search and status filtering
 - Slash commands:
@@ -61,7 +61,7 @@ Current OpenClaw deployment:
 
 - `src/models.ts` defines the adapter-neutral data model.
 - `src/services/storageService.ts` owns seed data, browser fallback persistence, and server workspace sync.
-- `src/services/agentService.ts` isolates agent calls; the MVP returns mock replies.
+- `src/services/agentService.ts` isolates agent calls through `/api/nono-discord/agent/reply`.
 - `src/services/commandParser.ts` parses slash commands independently of the UI.
 - `src/App.tsx` wires state transitions and the current browser UI.
 
@@ -69,6 +69,5 @@ The app stores a browser fallback copy under `openclaw.issueConsole.workspace.v1
 
 ## Next Phase
 
-- Replace mock `agentService` with OpenClaw Agent API calls.
 - Add real Cron/OpenClaw issue import and update adapters.
 - Add Discord adapter after the local model is stable.

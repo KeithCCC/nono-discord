@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import type { Channel, Issue, IssuePriority, IssueStatus, Message, Workspace } from "./models";
 import { ISSUE_PRIORITIES, ISSUE_STATUSES } from "./models";
-import { requestMockAgentReply } from "./services/agentService";
+import { requestAgentReply } from "./services/agentService";
 import { parseSlashCommand } from "./services/commandParser";
 import { loadRemoteWorkspace, loadWorkspace, resetWorkspace, saveRemoteWorkspace, saveWorkspace } from "./services/storageService";
 
@@ -200,8 +200,17 @@ function App() {
     }));
     const routedAgent = agent(issue.assignedAgentId) ?? agent(channel?.routing.defaultAgentId);
     if (!routedAgent) return;
-    const reply = await requestMockAgentReply({ issue, agent: routedAgent, userMessage });
-    commit((current) => ({ ...current, messages: [...current.messages, { ...reply, id: makeId("msg"), createdAt: now() }], updatedAt: now() }));
+    try {
+      const reply = await requestAgentReply({ issue, agent: routedAgent, userMessage, recentMessages: messages.slice(-12) });
+      commit((current) => ({ ...current, messages: [...current.messages, { ...reply, id: makeId("msg"), createdAt: now() }], updatedAt: now() }));
+    } catch (error) {
+      const body = error instanceof Error ? error.message : "Nono call failed.";
+      commit((current) => ({
+        ...current,
+        messages: [...current.messages, { id: makeId("msg"), issueId: issue.id, kind: "system", authorName: "OpenClaw", body, createdAt: now() }],
+        updatedAt: now(),
+      }));
+    }
   };
 
   return (
