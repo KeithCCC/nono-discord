@@ -3,7 +3,7 @@ import type { Channel, Issue, IssuePriority, IssueStatus, Message, Workspace } f
 import { ISSUE_PRIORITIES, ISSUE_STATUSES } from "./models";
 import { requestMockAgentReply } from "./services/agentService";
 import { parseSlashCommand } from "./services/commandParser";
-import { loadWorkspace, resetWorkspace, saveWorkspace } from "./services/storageService";
+import { loadRemoteWorkspace, loadWorkspace, resetWorkspace, saveRemoteWorkspace, saveWorkspace } from "./services/storageService";
 
 const makeId = (prefix: string) => `${prefix}-${crypto.randomUUID()}`;
 const now = () => new Date().toISOString();
@@ -19,8 +19,43 @@ function App() {
   const [search, setSearch] = useState("");
   const [composer, setComposer] = useState("");
   const [newChannelName, setNewChannelName] = useState("");
+  const [remoteReady, setRemoteReady] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<"local" | "loading" | "synced" | "saving" | "error">("loading");
 
-  useEffect(() => saveWorkspace(workspace), [workspace]);
+  useEffect(() => {
+    let cancelled = false;
+    loadRemoteWorkspace()
+      .then((remote) => {
+        if (cancelled) return;
+        if (remote) {
+          setWorkspace(remote);
+          setSelectedChannelId(remote.channels[0]?.id ?? "");
+          setSelectedIssueId("");
+        }
+        setSyncStatus(remote ? "synced" : "local");
+      })
+      .catch(() => {
+        if (!cancelled) setSyncStatus("local");
+      })
+      .finally(() => {
+        if (!cancelled) setRemoteReady(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    saveWorkspace(workspace);
+    if (!remoteReady) return;
+    setSyncStatus("saving");
+    const timeout = window.setTimeout(() => {
+      saveRemoteWorkspace(workspace)
+        .then(() => setSyncStatus("synced"))
+        .catch(() => setSyncStatus("error"));
+    }, 450);
+    return () => window.clearTimeout(timeout);
+  }, [remoteReady, workspace]);
 
   const channel = workspace.channels.find((item) => item.id === selectedChannelId) ?? workspace.channels[0];
   const issues = useMemo(() => {
@@ -173,6 +208,7 @@ function App() {
     <main className="app-shell">
       <aside className="pane channel-pane" aria-label="Channels">
         <div className="brand"><div><h1>OpenClaw</h1><p>Issue Console</p></div><button type="button" onClick={() => setWorkspace(resetWorkspace())}>Reset</button></div>
+        <div className={`sync-status ${syncStatus}`}>{syncStatus === "synced" ? "server synced" : syncStatus === "saving" ? "saving" : syncStatus === "loading" ? "loading" : syncStatus === "error" ? "sync error" : "local mode"}</div>
         <form className="channel-create" onSubmit={createChannel}><input value={newChannelName} onChange={(event) => setNewChannelName(event.target.value)} placeholder="new-channel" /><button type="submit">+</button></form>
         <nav className="channel-list">{workspace.channels.map((item) => <button key={item.id} className={item.id === channel?.id ? "channel active" : "channel"} onClick={() => { setSelectedChannelId(item.id); setSelectedIssueId(""); }}><span className="hash">#</span><span>{item.name}</span><small>{workspace.issues.filter((row) => row.channelId === item.id && row.status !== "archived").length}</small></button>)}</nav>
       </aside>

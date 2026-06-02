@@ -94,6 +94,34 @@ button {
   background: #2c3642;
 }
 
+.sync-status {
+  min-height: 28px;
+  border: 1px solid #314050;
+  border-radius: 6px;
+  padding: 6px 9px;
+  color: #b5c2d1;
+  background: #202b36;
+  font-size: 12px;
+}
+
+.sync-status.synced {
+  border-color: #2c6e4d;
+  color: #d8f8e4;
+  background: #173524;
+}
+
+.sync-status.saving,
+.sync-status.loading {
+  border-color: #4e647f;
+  color: #d7e8ff;
+}
+
+.sync-status.error {
+  border-color: #9f3f4b;
+  color: #ffe3e5;
+  background: #3b1d24;
+}
+
 .channel-create {
   display: grid;
   grid-template-columns: 1fr 38px;

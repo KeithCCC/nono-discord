@@ -190,3 +190,22 @@ export function resetWorkspace(): Workspace {
   saveWorkspace(seeded);
   return seeded;
 }
+
+export async function loadRemoteWorkspace(): Promise<Workspace | null> {
+  const response = await window.fetch("/api/nono-discord/workspace", {
+    credentials: "same-origin",
+  });
+  if (!response.ok) throw new Error(`Workspace load failed: ${response.status}`);
+  const payload = (await response.json()) as { workspace?: Workspace | null };
+  return payload.workspace ?? null;
+}
+
+export async function saveRemoteWorkspace(workspace: Workspace): Promise<void> {
+  const response = await window.fetch("/api/nono-discord/workspace", {
+    method: "PUT",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ workspace }),
+  });
+  if (!response.ok) throw new Error(`Workspace save failed: ${response.status}`);
+}
