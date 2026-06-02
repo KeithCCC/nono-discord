@@ -362,12 +362,19 @@ label textarea,
   gap: 18px;
   padding: 16px;
   overflow: auto;
+  border-right: 0;
+  color: #e7edf5;
+  background: #111822;
 }
 
 .detail-section {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  border: 1px solid #253244;
+  border-radius: 8px;
+  padding: 14px;
+  background: #17202c;
 }
 
 .section-title {
@@ -376,6 +383,7 @@ label textarea,
 
 .section-title h2 {
   font-size: 16px;
+  color: #f5f8fc;
 }
 
 .section-title button,
@@ -392,6 +400,29 @@ label {
   font-size: 13px;
 }
 
+.detail-pane label {
+  color: #aeb9c8;
+}
+
+.detail-pane label input,
+.detail-pane label select,
+.detail-pane label textarea {
+  border-color: #334257;
+  color: #f4f7fb;
+  background: #0f1720;
+}
+
+.detail-pane label input:focus,
+.detail-pane label select:focus,
+.detail-pane label textarea:focus {
+  border-color: #5f9df7;
+  outline: 2px solid rgba(95, 157, 247, 0.24);
+}
+
+.detail-pane label textarea {
+  scrollbar-color: #43546a #0f1720;
+}
+
 label textarea {
   min-height: 86px;
   resize: vertical;
@@ -406,6 +437,16 @@ label textarea {
 .agent-roster .online {
   color: #17613b;
   background: #ccebdc;
+}
+
+.detail-pane .agent-roster span {
+  color: #cbd7e7;
+  background: #263345;
+}
+
+.detail-pane .agent-roster .online {
+  color: #d9fbe7;
+  background: #1d6540;
 }
 
 .empty {
