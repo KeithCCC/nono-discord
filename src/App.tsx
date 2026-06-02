@@ -207,7 +207,7 @@ function App() {
   return (
     <main className="app-shell">
       <aside className="pane channel-pane" aria-label="Channels">
-        <div className="brand"><div><h1>Nono (OpenClaw)</h1><p>Issue Console</p></div><button type="button" onClick={() => setWorkspace(resetWorkspace())}>Reset</button></div>
+        <div className="brand"><div><h1>Nono (OpenClaw)</h1><p>Issue Console</p></div><button type="button" aria-label="Reset workspace" onClick={() => setWorkspace(resetWorkspace())}>Reset</button></div>
         <div className={`sync-status ${syncStatus}`}>{syncStatus === "synced" ? "server synced" : syncStatus === "saving" ? "saving" : syncStatus === "loading" ? "loading" : syncStatus === "error" ? "sync error" : "local mode"}</div>
         <form className="channel-create" onSubmit={createChannel}><input value={newChannelName} onChange={(event) => setNewChannelName(event.target.value)} placeholder="new-channel" /><button type="submit">+</button></form>
         <nav className="channel-list">{workspace.channels.map((item) => <button key={item.id} className={item.id === channel?.id ? "channel active" : "channel"} onClick={() => { setSelectedChannelId(item.id); setSelectedIssueId(""); }}><span className="hash">#</span><span>{item.name}</span><small>{workspace.issues.filter((row) => row.channelId === item.id && row.status !== "archived").length}</small></button>)}</nav>
