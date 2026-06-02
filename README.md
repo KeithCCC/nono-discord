@@ -38,6 +38,16 @@ npm run build
 npm run preview
 ```
 
+## Cron Status Sync
+
+Import current OpenClaw cron jobs that create or update Memedit notes into the server workspace:
+
+```bash
+node scripts/sync-cron-memedit-status.mjs
+```
+
+The script reads `/root/.openclaw/cron/jobs.json` and `/root/.openclaw/cron/jobs-state.json`, then upserts issues into the `cron-memedit-notes` channel.
+
 ## Deployment
 
 Current OpenClaw deployment:
